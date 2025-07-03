@@ -81,7 +81,7 @@ export const translations: {
     lastNamePlaceholder: "Votre nom",
     confirmPassword: "Confirmer le mot de passe",
     confirmPasswordPlaceholder: "••••••••",
-  
+    terms: "J'accepte les ",
     termsLink: "termes et conditions",
     registering: "Inscription...",
     registerBtn: "S'inscrire",
