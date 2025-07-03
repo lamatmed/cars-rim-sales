@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import { updateUserAction, deleteUserAction } from '@/lib/actions';
 import connectDB from '@/lib/config/db';
@@ -13,7 +12,7 @@ export async function PATCH(request: Request, { params }: any) {
   return NextResponse.json(result);
 }
 
-export async function DELETE(request: Request, { params } : any) {
+export async function DELETE(request: Request, { params }) {
   await connectDB();
   const result = await deleteUserAction(params.id);
   if (result.error) {

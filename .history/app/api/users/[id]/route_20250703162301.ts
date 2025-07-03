@@ -13,7 +13,7 @@ export async function PATCH(request: Request, { params }: any) {
   return NextResponse.json(result);
 }
 
-export async function DELETE(request: Request, { params } : any) {
+export async function DELETE(request: Request, { params }) {
   await connectDB();
   const result = await deleteUserAction(params.id);
   if (result.error) {

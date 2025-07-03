@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getCarByIdAction } from "@/lib/actions";
 import connectDB from "@/lib/config/db";
 
-export default async function CarDetailPage(props: any) {
+export default async function CarDetailPage({ id: string }}) {
   await connectDB();
   const car = await getCarByIdAction(props.params.id);
   if (!car || car.error) return notFound();
