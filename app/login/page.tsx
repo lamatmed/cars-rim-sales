@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiPhone, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { t } from "@/lib/i18n";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +15,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => { setIsClient(true); }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,20 +74,20 @@ export default function LoginPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full blur-md opacity-20 -z-10"></div>
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
-              Connexion
+              {isClient ? t("login") : "Connexion"}
             </h1>
-            <p className="text-gray-500 mt-2">Accédez à votre espace personnel</p>
+            <p className="text-gray-500 mt-2">{isClient ? t("loginSubtitle") : "Accédez à votre espace personnel"}</p>
           </motion.div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">Téléphone</label>
+              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("phone") : "Téléphone"}</label>
               <div className="relative">
                 <FiPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input
                   type="tel"
                   className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300 transition-all"
-                  placeholder="+222 22 22 22 22"
+                  placeholder={isClient ? t("phonePlaceholder") : "+222 22 22 22 22"}
                   required
                   pattern="[+]{1}[0-9]{1,3}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}"
                   value={phone}
@@ -92,13 +96,13 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">Mot de passe</label>
+              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("password") : "Mot de passe"}</label>
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300 transition-all"
-                  placeholder="••••••••"
+                  placeholder={isClient ? t("passwordPlaceholder") : "••••••••"}
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -112,7 +116,7 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+            {error && <div className="text-red-500 text-sm text-center">{isClient ? t(error) : error}</div>}
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <input 
@@ -123,11 +127,11 @@ export default function LoginPage() {
                   className="h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300"
                 />
                 <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                  Se souvenir de moi
+                  {isClient ? t("rememberMe") : "Se souvenir de moi"}
                 </label>
               </div>
               <Link href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
-                Mot de passe oublié?
+                {isClient ? t("forgotPassword") : "Mot de passe oublié?"}
               </Link>
             </div>
             <motion.button
@@ -137,14 +141,14 @@ export default function LoginPage() {
               className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg"
               disabled={loading}
             >
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? (isClient ? t("loggingIn") : "Connexion...") : (isClient ? t("loginBtn") : "Se connecter")}
             </motion.button>
           </form>
 
           <p className="text-center text-gray-600 text-sm mt-6">
-            Pas encore de compte?{" "}
+            {isClient ? t("noAccount") : "Pas encore de compte?"} {" "}
             <Link href="/register" className="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">
-              Créer un compte
+              {isClient ? t("createAccount") : "Créer un compte"}
             </Link>
           </p>
         </motion.div>

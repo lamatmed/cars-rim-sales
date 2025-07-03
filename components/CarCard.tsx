@@ -137,13 +137,13 @@ export default function CarCard({ car }: { car: Car }) {
             <span className="text-gray-500 ml-1">(128 avis)</span>
           </div>
           <div className="flex flex-col gap-2 items-end">
-            <button 
-              className={`font-medium py-2 px-4 rounded-lg transition-colors duration-300 ${car.isAvaliable ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-              disabled={!car.isAvaliable}
+          <button 
+            className={`font-medium py-2 px-4 rounded-lg transition-colors duration-300 ${car.isAvaliable ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+            disabled={!car.isAvaliable}
               onClick={handleBuy}
-            >
-              Acheter
-            </button>
+          >
+            Acheter
+          </button>
             {showOrder && (
               <form onSubmit={handleOrder} className="bg-white border rounded p-4 mt-2 flex flex-col gap-2 shadow-lg z-10">
                 <label className="text-sm font-medium">Début</label>

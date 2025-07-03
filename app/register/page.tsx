@@ -6,7 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiUser, FiPhone, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { useState } from "react";
+import { t } from "@/lib/i18n";
+import { useState, useEffect } from "react";
 import Uploader from "@/components/Uploader";
 
 export default function RegisterPage() {
@@ -20,6 +21,9 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => { setIsClient(true); }, []);
 
   const handleImageUpload = (url: string) => {
     setImageUrl(url);
@@ -29,7 +33,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
+      setError(t("passwordMismatch"));
       return;
     }
     setLoading(true);
@@ -41,7 +45,7 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Erreur lors de l'inscription");
+        setError(data.error || t("registerError"));
       } else {
         if (data.token && data.user) {
           localStorage.setItem("token", data.token);
@@ -50,7 +54,7 @@ export default function RegisterPage() {
         window.location.href = "/login";
       }
     } catch (err) {
-      setError("Erreur serveur");
+      setError(t("serverError"));
     } finally {
       setLoading(false);
     }
@@ -86,9 +90,9 @@ export default function RegisterPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full blur-md opacity-20 -z-10"></div>
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
-              Créer un compte
+              {isClient ? t("register") : "Créer un compte"}
             </h1>
-            <p className="text-gray-500 mt-2">Rejoignez notre communauté</p>
+            <p className="text-gray-500 mt-2">{isClient ? t("registerSubtitle") : "Rejoignez notre communauté"}</p>
           </motion.div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
@@ -99,13 +103,13 @@ export default function RegisterPage() {
 
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Prénom</label>
+                <label className="block text-gray-700 font-medium mb-2">{isClient ? t("firstName") : "Prénom"}</label>
                 <div className="relative">
                   <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                   <input 
                     type="text" 
                     className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                    placeholder="Votre prénom" 
+                    placeholder={isClient ? t("firstNamePlaceholder") : "Votre prénom"}
                     required 
                     value={firstName}
                     onChange={e => setFirstName(e.target.value)}
@@ -113,13 +117,13 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Nom</label>
+                <label className="block text-gray-700 font-medium mb-2">{isClient ? t("lastName") : "Nom"}</label>
                 <div className="relative">
                   <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                   <input 
                     type="text" 
                     className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                    placeholder="Votre nom" 
+                    placeholder={isClient ? t("lastNamePlaceholder") : "Votre nom"}
                     required 
                     value={lastName}
                     onChange={e => setLastName(e.target.value)}
@@ -129,13 +133,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">Téléphone</label>
+              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("phone") : "Téléphone"}</label>
               <div className="relative">
                 <FiPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input
                   type="tel"
                   className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300"
-                  placeholder="+222 22 22 22 22"
+                  placeholder={isClient ? t("phonePlaceholder") : "+222 22 22 22 22"}
                   required
                   pattern="[+]{1}[0-9]{1,3}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}"
                   value={phone}
@@ -145,13 +149,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">Mot de passe</label>
+              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("password") : "Mot de passe"}</label>
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input 
                   type={showPassword ? "text" : "password"} 
                   className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                  placeholder="••••••••" 
+                  placeholder={isClient ? t("passwordPlaceholder") : "••••••••"} 
                   required 
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -167,13 +171,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">Confirmer le mot de passe</label>
+              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("confirmPassword") : "Confirmer le mot de passe"}</label>
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input 
                   type={showConfirmPassword ? "text" : "password"} 
                   className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                  placeholder="••••••••" 
+                  placeholder={isClient ? t("confirmPasswordPlaceholder") : "••••••••"} 
                   required 
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
@@ -188,7 +192,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+            {error && <div className="text-red-500 text-sm text-center">{isClient ? t(error) : error}</div>}
 
             <div className="flex items-center">
               <input 
@@ -197,7 +201,8 @@ export default function RegisterPage() {
                 className="h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300"
               />
               <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                J'accepte les <Link href="/terms" className="text-indigo-600 hover:underline font-medium">termes et conditions</Link>
+                {isClient ? t("terms") : "J'accepte les "}
+                <Link href="/terms" className="text-indigo-600 hover:underline font-medium">{isClient ? t("termsLink") : "termes et conditions"}</Link>
               </label>
             </div>
 
@@ -211,14 +216,14 @@ export default function RegisterPage() {
               className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg mt-2"
               disabled={loading}
             >
-              {loading ? "Inscription..." : "S'inscrire"}
+              {loading ? (isClient ? t("registering") : "Inscription...") : (isClient ? t("registerBtn") : "S'inscrire")}
             </motion.button>
           </form>
 
           <p className="text-center text-gray-600 text-sm mt-6">
-            Déjà un compte ?{" "}
+            {isClient ? t("alreadyAccount") : "Déjà un compte ?"} {" "}
             <Link href="/login" className="text-indigo-600 hover:text-indigo-800 font-semibold">
-              Se connecter
+              {isClient ? t("login") : "Se connecter"}
             </Link>
           </p>
         </motion.div>
