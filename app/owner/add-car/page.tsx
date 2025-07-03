@@ -6,6 +6,7 @@ import { assets, cityList } from "../../../public/assets/assets";
 import Image from "next/image";
 import Link from "next/link";
 import Uploader from "@/components/Uploader";
+import { t } from "@/lib/i18n";
 
 export default function AddCarPage() {
   const [brand, setBrand] = useState("");
@@ -79,26 +80,26 @@ export default function AddCarPage() {
         <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
           <div className="flex flex-col items-center mb-6">
             <Image src={assets.addIconColored} alt="Ajouter" width={48} height={48} className="mb-2" />
-            <h1 className="text-2xl font-bold text-gray-900">Ajouter une voiture</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">{t("addCar")}</h1>
           </div>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Marque</label>
+                <label className="block text-gray-700 font-medium mb-2">{t("brand")}</label>
                 <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Marque" value={brand} onChange={e => setBrand(e.target.value)} required />
               </div>
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Modèle</label>
+                <label className="block text-gray-700 font-medium mb-2">{t("model")}</label>
                 <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Modèle" value={model} onChange={e => setModel(e.target.value)} required />
               </div>
             </div>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Année</label>
+                <label className="block text-gray-700 font-medium mb-2">{t("year")}</label>
                 <input type="number" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Année" value={year} onChange={e => setYear(e.target.value)} required />
               </div>
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Catégorie</label>
+                <label className="block text-gray-700 font-medium mb-2">{t("category")}</label>
                 <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Catégorie" value={category} onChange={e => setCategory(e.target.value)} />
               </div>
             </div>
@@ -118,14 +119,14 @@ export default function AddCarPage() {
                 <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Transmission" value={transmission} onChange={e => setTransmission(e.target.value)} />
               </div>
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Prix (MRU)</label>
+                <label className="block text-gray-700 font-medium mb-2">{t("price")}</label>
                 <input type="number" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Prix" value={price} onChange={e => setPrice(e.target.value)} required />
               </div>
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Ville</label>
+              <label className="block text-gray-700 font-medium mb-2">{t("location")}</label>
               <select className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" value={location} onChange={e => setLocation(e.target.value)} required>
-                <option value="">Sélectionner une ville</option>
+                <option value="">{t("selectCity")}</option>
                 {cityList.map(city => (
                   <option key={city} value={city}>{city}</option>
                 ))}
@@ -137,15 +138,15 @@ export default function AddCarPage() {
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" id="isAvaliable" checked={isAvaliable} onChange={e => setIsAvaliable(e.target.checked)} />
-              <label htmlFor="isAvaliable" className="text-gray-700">Disponible</label>
+              <label htmlFor="isAvaliable" className="text-gray-700">{t("available")}</label>
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Image</label>
+              <label className="block text-gray-700 font-medium mb-2">{t("image")}</label>
               <Uploader onUpload={setImage} />
             </div>
-            {error && <div className="text-red-500 text-center pt-24">{error}</div>}
-            <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all" disabled={loading}>
-              {loading ? "Ajout..." : "Ajouter la voiture"}
+            {error && <div className="text-red-500 text-center">{error}</div>}
+            <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-md transition-all" disabled={loading}>
+              {loading ? t("loading") : t("add")}
             </button>
           </form>
         </div>

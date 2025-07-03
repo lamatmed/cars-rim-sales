@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { t } from "@/lib/i18n";
 // import { assets } from "../public/assets/assets"; // Supprimé
 
 interface Car {
@@ -154,12 +156,10 @@ export default function CarCard({ car }: { car: Car }) {
               </form>
             )}
             {orderSuccess && <div className="text-green-600 text-xs mt-2">{orderSuccess}</div>}
-            <a
-              href={`/cars/${car._id}`}
-              className="mt-1 text-blue-600 hover:underline text-sm font-medium"
-            >
-              Détail
-            </a>
+            <div className="flex gap-2 mt-4">
+              <Link href={`/cars/${car._id}`} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg text-sm text-center">{t("detail")}</Link>
+              <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm text-center">{t("buy")}</button>
+            </div>
           </div>
         </div>
       </div>

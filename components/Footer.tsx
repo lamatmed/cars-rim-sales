@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
+'use client'
 import Image from "next/image";
 import { assets, menuLinks, cityList } from "../public/assets/assets";
 import Link from "next/link";
+import { t } from "@/lib/i18n";
 
 export default function Footer() {
   return (
@@ -15,9 +17,7 @@ export default function Footer() {
               <Image src={assets.logo} alt="Cars-Rim Logo" width={40} height={40} className="h-10 w-auto mr-3" />
               <span className="text-2xl font-bold text-gray-900">Cars-Rim</span>
             </div>
-            <p className="text-gray-600 max-w-xs">
-              Vente de voitures premium en Mauritanie. Découvrez notre collection exclusive et trouvez la voiture idéale pour vous.
-            </p>
+            <p className="text-gray-600 max-w-md mb-8">{t("footerDescription")}</p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors">
                 <Image src={assets.facebook_logo} alt="Facebook" width={24} height={24} />
@@ -35,13 +35,13 @@ export default function Footer() {
           </div>
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">Liens Rapides</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">{t("quickLinks") || "Liens Rapides"}</h3>
             <ul className="space-y-4">
               {menuLinks.map((link, index) => (
                 <li key={index}>
                   <Link href={link.path} className="text-gray-600 hover:text-indigo-600 transition-colors flex items-center group">
                     <Image src={assets.arrow_icon} alt="Arrow" width={12} height={12} className="mr-2 transform group-hover:translate-x-1 transition-transform" />
-                    {link.name}
+                    {t(link.name)}
                   </Link>
                 </li>
               ))}
@@ -49,7 +49,7 @@ export default function Footer() {
           </div>
           {/* Locations */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">Nos Villes</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">{t("ourCities") || "Nos Villes"}</h3>
             <ul className="space-y-3">
               {cityList.map((city, index) => (
                 <li key={index} className="flex items-center">
@@ -113,11 +113,11 @@ export default function Footer() {
         </div>
         {/* Bottom Section */}
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Cars-Rim. Tous droits réservés.</p>
+          <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Cars-Rim. {t("allRightsReserved") || "Tous droits réservés."}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">Termes et conditions</a>
-            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">Politique de confidentialité</a>
-            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">Cookies</a>
+            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">{t("terms")}</a>
+            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">{t("privacy")}</a>
+            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">{t("cookies")}</a>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { assets, cityList } from "../public/assets/assets";
 import Image from "next/image";
 import { FiMapPin, FiSearch, FiChevronDown } from "react-icons/fi";
 import { useRouter } from 'next/navigation';
+import { t } from "@/lib/i18n";
 
 export default function Hero() {
   const router = useRouter();
@@ -53,11 +54,11 @@ export default function Hero() {
         {/* Section texte et formulaire */}
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center md:text-left mb-4 text-gray-800 leading-tight">
-            <span className="block">Achetez la voiture</span>
-            <span className="block text-indigo-600">de vos rêves</span>
+            <span className="block">{t("buyCar")}</span>
+            <span className="block text-indigo-600">{t("ofYourDreams")}</span>
           </h1>
           <p className="text-gray-600 text-center md:text-left mb-8 max-w-md">
-            Trouvez la voiture parfaite pour votre prochain achat. Large sélection, prix compétitifs, et transaction sécurisée.
+            {t("findPerfectCar")}
           </p>
           <form
             onSubmit={handleSubmit}
@@ -66,7 +67,7 @@ export default function Hero() {
             <div className="space-y-5">
               {/* Champ de ville */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Ville</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("city")}</label>
                 <div className="relative">
                   <FiMapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <select
@@ -79,7 +80,7 @@ export default function Hero() {
                     required
                     className="w-full pl-10 pr-4 py-3.5 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none"
                   >
-                    <option value="">Sélectionner une ville</option>
+                    <option value="">{t("selectCity")}</option>
                     {cityList.map(city => (
                       <option key={city} value={city}>{city}</option>
                     ))}
@@ -89,7 +90,7 @@ export default function Hero() {
               </div>
               {/* Champ de marque */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Marque</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("brand")}</label>
                 <div className="relative">
                   <select
                     value={selectedBrand}
@@ -99,7 +100,7 @@ export default function Hero() {
                     }}
                     className="w-full pl-4 pr-4 py-3.5 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none"
                   >
-                    <option value="">Toutes marques</option>
+                    <option value="">{t("allBrands")}</option>
                     {uniqueBrands.map(brand => (
                       <option key={brand} value={brand}>{brand}</option>
                     ))}
@@ -109,14 +110,14 @@ export default function Hero() {
               </div>
               {/* Champ de modèle */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Modèle</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("model")}</label>
                 <div className="relative">
                   <select
                     value={selectedModel}
                     onChange={e => setSelectedModel(e.target.value)}
                     className="w-full pl-4 pr-4 py-3.5 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none"
                   >
-                    <option value="">Tous modèles</option>
+                    <option value="">{t("allModels")}</option>
                     {uniqueModels.map(model => (
                       <option key={model} value={model}>{model}</option>
                     ))}
@@ -129,7 +130,7 @@ export default function Hero() {
                 className={`w-full flex items-center justify-center px-6 py-4 font-medium rounded-lg transition-all mt-2 bg-indigo-600 hover:bg-indigo-700 text-white transform hover:-translate-y-0.5 shadow-md hover:shadow-lg`}
               >
                 <FiSearch className="mr-2" />
-                Rechercher
+                {t("search")}
               </button>
               {error && <div className="text-red-500 text-center pt-4">{error}</div>}
             </div>
@@ -141,7 +142,7 @@ export default function Hero() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-sm text-gray-600">Sans frais cachés</span>
+              <span className="text-sm text-gray-600">{t("noHiddenFees")}</span>
             </div>
             <div className="flex items-center">
               <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
@@ -149,7 +150,7 @@ export default function Hero() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-sm text-gray-600">Transaction sécurisée</span>
+              <span className="text-sm text-gray-600">{t("secureTransaction")}</span>
             </div>
           </div>
         </div>

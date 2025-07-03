@@ -2,6 +2,7 @@
 'use client'
 import { useEffect, useState } from "react";
 import CarCard from "@/components/CarCard";
+import { t } from "@/lib/i18n";
 
 export default function CarsPage() {
   const [cars, setCars] = useState([]);
@@ -30,7 +31,7 @@ export default function CarsPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <section className="max-w-5xl mx-auto px-4 py-18">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">Toutes les voitures</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">{t("allCars")}</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {cars.map((car: any) => (
             <CarCard key={car._id} car={car} />

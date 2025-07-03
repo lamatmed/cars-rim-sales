@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import { assets, menuLinks } from "../public/assets/assets";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect as useIsoEffect } from "react";
 import { FiSearch, FiX, FiUser, FiLogOut, FiLogIn, FiGrid } from "react-icons/fi";
 import Image from "next/image";
+import { t } from "@/lib/i18n";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,6 +16,16 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
+  const [lang, setLang] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('lang') || 'FR';
+    }
+    return 'FR';
+  });
+  // Forcer le re-render sur changement de langue
+  const [, setRerender] = useState(0);
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => { setIsClient(true); }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -25,6 +37,25 @@ export default function Navbar() {
     };
     window.addEventListener("storage", syncUser);
     return () => window.removeEventListener("storage", syncUser);
+  }, []);
+
+  useIsoEffect(() => {
+    if (typeof window !== 'undefined') {
+      const html = document.documentElement;
+      if (lang === 'AR') {
+        html.setAttribute('dir', 'rtl');
+        html.classList.add('ar');
+      } else {
+        html.setAttribute('dir', 'ltr');
+        html.classList.remove('ar');
+      }
+    }
+  }, [lang]);
+
+  useEffect(() => {
+    const rerender = () => setRerender(x => x + 1);
+    window.addEventListener("langchange", rerender);
+    return () => window.removeEventListener("langchange", rerender);
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -47,10 +78,23 @@ export default function Navbar() {
     router.push("/");
   };
 
+  const handleLang = (newLang: 'FR' | 'AR') => {
+    setLang(newLang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lang', newLang);
+      window.dispatchEvent(new Event('langchange'));
+    }
+  };
+
   return (
     <nav className="bg-white shadow-sm fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
+          {/* Sélecteur de langue */}
+          <div className="flex items-center gap-2 mr-4">
+            <button onClick={() => handleLang('FR')} className={`px-2 py-1 rounded text-sm font-bold ${lang === 'FR' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}>FR</button>
+            <button onClick={() => handleLang('AR')} className={`px-2 py-1 rounded text-sm font-bold ${lang === 'AR' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}>AR</button>
+          </div>
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
@@ -74,7 +118,7 @@ export default function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setIsSearchFocused(false)}
-                  placeholder="Rechercher..."
+                  placeholder={t("searchPlaceholder")}
                   className="w-full h-10 py-2 pr-4 text-gray-700 focus:outline-none"
                 />
                 {searchQuery && (
@@ -98,7 +142,7 @@ export default function Navbar() {
                 href={link.path}
                 className="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300 px-1 py-2"
               >
-                {link.name}
+                {isClient ? t(link.name) : ""}
               </Link>
             ))}
             {/* État utilisateur - Desktop */}
@@ -107,7 +151,7 @@ export default function Navbar() {
                 <Image src={user.imageUrl || assets.user_profile} alt="avatar" width={32} height={32} className="w-8 h-8 rounded-full border-2 border-indigo-500" />
                 <span className="ml-2 font-medium text-gray-800">{user.firstName}
                   {user.role === "admin" && (
-                    <span className="ml-2 px-2 py-0.5 rounded bg-gradient-to-r from-indigo-600 to-purple-500 text-white text-xs font-bold align-middle">Admin</span>
+                    <span className="ml-2 px-2 py-0.5 rounded bg-gradient-to-r from-indigo-600 to-purple-500 text-white text-xs font-bold align-middle">{isClient ? t("admin") : ""}</span>
                   )}
                 </span>
                 <button
@@ -128,14 +172,14 @@ export default function Navbar() {
                       onClick={() => setUserMenuOpen(false)}
                     >
                       <FiGrid className="mr-2" />
-                      Tableau de bord
+                      {isClient ? t("dashboard") : ""}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 flex items-center"
                     >
                       <FiLogOut className="mr-2 text-red-600" />
-                      Déconnexion
+                      {isClient ? t("logout") : ""}
                     </button>
                   </div>
                 )}
@@ -146,7 +190,7 @@ export default function Navbar() {
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center"
               >
                 <FiLogIn className="mr-1.5 text-red-600" />
-                Connexion
+                {isClient ? t("login") : ""}
               </button>
             )}
           </div>
@@ -215,7 +259,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Rechercher..."
+                placeholder={isClient ? t("searchPlaceholder") : ""}
                 className="w-full h-10 py-2 pr-4 text-gray-700 focus:outline-none"
               />
               {searchQuery && (
@@ -239,7 +283,7 @@ export default function Navbar() {
                 className="block px-3 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {link.name}
+                {isClient ? t(link.name) : ""}
               </Link>
             ))}
           </div>
@@ -252,7 +296,7 @@ export default function Navbar() {
                   <Image src={user.imageUrl || assets.user_profile} alt="avatar" width={28} height={28} className="w-7 h-7 rounded-full border-2 border-indigo-500 mr-2" />
                   <span className="font-medium text-gray-800">{user.firstName}
                     {user.role === "admin" && (
-                      <span className="ml-2 px-2 py-0.5 rounded bg-gradient-to-r from-indigo-600 to-purple-500 text-white text-xs font-bold align-middle">Admin</span>
+                      <span className="ml-2 px-2 py-0.5 rounded bg-gradient-to-r from-indigo-600 to-purple-500 text-white text-xs font-bold align-middle">{isClient ? t("admin") : ""}</span>
                     )}
                   </span>
                 </div>
@@ -262,14 +306,14 @@ export default function Navbar() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <FiGrid className="mr-3" />
-                  Tableau de bord
+                  {isClient ? t("dashboard") : ""}
                 </Link>
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center px-3 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
                 >
                   <FiLogOut className="mr-3 text-red-600" />
-                  Déconnexion
+                  {isClient ? t("logout") : ""}
                 </button>
               </>
             ) : (
@@ -278,7 +322,7 @@ export default function Navbar() {
                 className="w-full flex items-center px-3 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
               >
                 <FiLogIn className="mr-3" />
-                Connexion
+                {isClient ? t("login") : ""}
               </button>
             )}
           </div>

@@ -88,16 +88,16 @@ export const assets = {
     car_image4
 }
 export const menuLinks = [
-    { name: "Accueil", path: "/" },
-    { name: "Voitures", path: "/cars" },
-    { name: "Mes commandes", path: "/my-orders" },
+    { name: "home", path: "/" },
+    { name: "cars", path: "/cars" },
+    { name: "myOrders", path: "/my-orders" },
 ]
 
 export const ownerMenuLinks = [
-    { name: "Tableau de bord", path: "/owner", icon: dashboardIcon, coloredIcon: dashboardIconColored },
-    { name: "Ajouter une voiture", path: "/owner/add-car", icon: addIcon, coloredIcon: addIconColored },
-    { name: "Gérer les voitures", path: "/owner/manage-cars", icon: carIcon, coloredIcon: carIconColored },
-    { name: "Gérer les commandes", path: "/owner/manage-orders", icon: listIcon, coloredIcon: listIconColored },
+    { name: "dashboard", path: "/owner", icon: dashboardIcon, coloredIcon: dashboardIconColored },
+    { name: "addCar", path: "/owner/add-car", icon: addIcon, coloredIcon: addIconColored },
+    { name: "manageCars", path: "/owner/manage-cars", icon: carIcon, coloredIcon: carIconColored },
+    { name: "manageOrders", path: "/owner/manage-orders", icon: listIcon, coloredIcon: listIconColored },
 ]
 
 export const dummyUserData = {
