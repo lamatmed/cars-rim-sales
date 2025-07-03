@@ -16,7 +16,7 @@ export default function ManageOrdersPage() {
     const data = await res.json();
     if (res.ok) {
       const filtered = Array.isArray(data) && user ? data.filter((order: any) => order.car && order.car.owner && (order.car.owner._id === user._id || order.car.owner === user._id)) : [];
-      setOrders(filtered as any);
+      setOrders(filtered as );
     } else setError(data.error || "Erreur lors du chargement");
     setLoading(false);
   };
