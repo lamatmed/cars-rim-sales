@@ -149,7 +149,7 @@ export const translations: {
     terms: "الشروط والأحكام",
     privacy: "سياسة الخصوصية",
     cookies: "الكوكيز",
-    buy: "مهتم",
+    buy: "ري",
     footerDescription: "بيع سيارات فاخرة في موريتانيا. اكتشف مجموعتنا الحصرية وابحث عن السيارة المثالية لك.",
     allCars: "جميع السيارات",
     loginSubtitle: "ادخل إلى حسابك الشخصي",
