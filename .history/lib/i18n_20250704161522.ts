@@ -59,7 +59,7 @@ export const translations: {
     terms: "Termes et conditions",
     privacy: "Politique de confidentialité",
     cookies: "Cookies",
-    buy: "Intéressant",
+    buy: "Intéressشىف ",
     footerDescription: "Vente de voitures premium en Mauritanie. Découvrez notre collection exclusive et trouvez la voiture idéale pour vous.",
     allCars: "Toutes les voitures",
     loginSubtitle: "Accédez à votre espace personnel",
