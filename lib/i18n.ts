@@ -92,6 +92,8 @@ export const translations: {
     contactOwner: "Contacter",
     manageUsers: "Gérer les utilisateurs",
     loading: "Chargement...",
+    ourCities: "Nos villes",
+    quickLinks: "Liens rapides",
     // ... ajoute tous les textes nécessaires
   },
   AR: {
@@ -184,6 +186,8 @@ export const translations: {
     contactOwner: "تواصل مع المالك",
     manageUsers: "إدارة المستخدمين",
     loading: "جاري التحميل...",
+    ourCities: "مدننا",
+    quickLinks: "روابط سريعة",
     // ... ajoute tous les textes nécessaires en arabe
   }
 };
