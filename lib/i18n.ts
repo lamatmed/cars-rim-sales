@@ -90,6 +90,8 @@ export const translations: {
     registerError: "Erreur lors de l'inscription",
     serverError: "Erreur serveur",
     contactOwner: "Contacter",
+    manageUsers: "Gérer les utilisateurs",
+    loading: "Chargement...",
     // ... ajoute tous les textes nécessaires
   },
   AR: {
@@ -180,6 +182,8 @@ export const translations: {
     registerError: "حدث خطأ أثناء التسجيل",
     serverError: "خطأ في الخادم",
     contactOwner: "تواصل مع المالك",
+    manageUsers: "إدارة المستخدمين",
+    loading: "جاري التحميل...",
     // ... ajoute tous les textes nécessaires en arabe
   }
 };
