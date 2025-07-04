@@ -173,7 +173,7 @@ export default function CarCard({ car }: { car: Car }) {
                   href={`https://wa.me/${car.owner.phone.replace(/[^\d]/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className=" hover:bg-green-200 text-white font-bold py-2 px-4 rounded-lg text-sm text-center"
+                  className="bg-g-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm text-center"
                 >
                  <FaWhatsapp className="text-green-500 text-2xl" />
                 </a>
