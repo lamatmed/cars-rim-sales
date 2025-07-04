@@ -7,18 +7,9 @@ import Link from 'next/link';
 import { t } from "@/lib/i18n";
 // import { assets } from "../public/assets/assets"; // Supprimé
 
-interface UserOwner {
-  _id: string;
-  phone?: string;
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  // autres champs si besoin
-}
-
 interface Car {
   _id: string;
-  owner: string | UserOwner;
+  owner: string;
   brand: string;
   model: string;
   image: any;

@@ -7,18 +7,9 @@ import Link from 'next/link';
 import { t } from "@/lib/i18n";
 // import { assets } from "../public/assets/assets"; // Supprimé
 
-interface UserOwner {
-  _id: string;
-  phone?: string;
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  // autres champs si besoin
-}
-
 interface Car {
   _id: string;
-  owner: string | UserOwner;
+  owner: string;
   brand: string;
   model: string;
   image: any;
@@ -167,7 +158,7 @@ export default function CarCard({ car }: { car: Car }) {
             {orderSuccess && <div className="text-green-600 text-xs mt-2">{orderSuccess}</div>}
             <div className="flex gap-2 mt-4">
               <Link href={`/cars/${car._id}`} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg text-sm text-center">{t("detail")}</Link>
-              {typeof car.owner === 'object' && car.owner && 'phone' in car.owner && car.owner.phone && (
+              {typeof car.owner === 'string' && car.owner && 'phone' in car.owner && car.owner.phone && (
                 <a
                   href={`https://wa.me/${car.owner.phone.replace(/[^\d]/g, "")}`}
                   target="_blank"

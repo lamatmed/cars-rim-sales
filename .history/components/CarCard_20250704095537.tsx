@@ -7,18 +7,9 @@ import Link from 'next/link';
 import { t } from "@/lib/i18n";
 // import { assets } from "../public/assets/assets"; // Supprimé
 
-interface UserOwner {
-  _id: string;
-  phone?: string;
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  // autres champs si besoin
-}
-
 interface Car {
   _id: string;
-  owner: string | UserOwner;
+  owner: string;
   brand: string;
   model: string;
   image: any;
@@ -147,11 +138,11 @@ export default function CarCard({ car }: { car: Car }) {
           </div>
           <div className="flex flex-col gap-2 items-end">
           <button 
-            className={`font-medium py-2 px-4 rounded-lg transition-colors duration-300 ${car.isAvaliable ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+            className={`font-medium py-2 px-4 rounded-lg transition-colors duration-300 ${car.isAvaliable ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             disabled={!car.isAvaliable}
               onClick={handleBuy}
           >
-            {t("buy")}
+            Acheter
           </button>
             {showOrder && (
               <form onSubmit={handleOrder} className="bg-white border rounded p-4 mt-2 flex flex-col gap-2 shadow-lg z-10">
@@ -167,16 +158,7 @@ export default function CarCard({ car }: { car: Car }) {
             {orderSuccess && <div className="text-green-600 text-xs mt-2">{orderSuccess}</div>}
             <div className="flex gap-2 mt-4">
               <Link href={`/cars/${car._id}`} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg text-sm text-center">{t("detail")}</Link>
-              {typeof car.owner === 'object' && car.owner && 'phone' in car.owner && car.owner.phone && (
-                <a
-                  href={`https://wa.me/${car.owner.phone.replace(/[^\d]/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm text-center"
-                >
-                  {t("contactOwner")}
-                </a>
-              )}
+   
             </div>
           </div>
         </div>
