@@ -6,17 +6,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 
-export default function CarDetailPage({ params }: { params: { id: string } }) {
+export default function CarDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [car, setCar] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+  const [carId, setCarId] = useState<string>("");
   const { lang, isClient } = useLanguage();
 
   useEffect(() => {
+    const resolveParams = async () => {
+      const resolvedParams = await params;
+      setCarId(resolvedParams.id);
+    };
+    resolveParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!carId) return;
+    
     const fetchCar = async () => {
       try {
-        const res = await fetch(`/api/cars/${params.id}`);
+        const res = await fetch(`/api/cars/${carId}`);
         const data = await res.json();
         if (res.ok) {
           setCar(data);
@@ -31,7 +42,7 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
     };
 
     fetchCar();
-  }, [params.id]);
+  }, [carId]);
 
   const handleInterested = () => {
     setShowMessage(true);
