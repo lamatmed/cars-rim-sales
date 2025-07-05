@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { useEffect, useState } from "react";
@@ -10,7 +9,6 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
   const [car, setCar] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
   const { lang, isClient } = useLanguage();
 
   useEffect(() => {
@@ -32,13 +30,6 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
 
     fetchCar();
   }, [params.id]);
-
-  const handleInterested = () => {
-    setShowMessage(true);
-    setTimeout(() => {
-      setShowMessage(false);
-    }, 3000);
-  };
 
   if (loading) return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center pt-24">
@@ -110,18 +101,12 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
               </span>
             </div>
             <button 
-              onClick={handleInterested}
               className={`font-medium py-3 px-6 rounded-lg transition-colors duration-300 ${car.isAvaliable ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
               disabled={!car.isAvaliable}
             >
-              {isClient ? (lang === 'AR' ? 'مثير للاهتمام' : 'Intéressant') : ''}
+              {isClient ? (lang === 'AR' ? 'شراء' : 'Acheter') : ''}
             </button>
           </div>
-          {showMessage && (
-            <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-              {isClient ? (lang === 'AR' ? 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً.' : 'Votre demande a été envoyée avec succès! Nous vous contacterons bientôt.') : ''}
-            </div>
-          )}
           <Link 
             href="/cars" 
             className="inline-block mt-8 text-indigo-600 hover:underline"
