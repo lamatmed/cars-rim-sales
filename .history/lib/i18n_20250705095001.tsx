@@ -1,3 +1,6 @@
+'use client'
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
 export const translations: {
   FR: { [key: string]: string },
   AR: { [key: string]: string }
@@ -81,7 +84,7 @@ export const translations: {
     lastNamePlaceholder: "Votre nom",
     confirmPassword: "Confirmer le mot de passe",
     confirmPasswordPlaceholder: "••••••••",
-  
+  myOrders:
     termsLink: "termes et conditions",
     registering: "Inscription...",
     registerBtn: "S'inscrire",
@@ -192,11 +195,79 @@ export const translations: {
   }
 };
 
+// Language context
+interface LanguageContextType {
+  lang: "FR" | "AR";
+  setLang: (lang: "FR" | "AR") => void;
+  isClient: boolean;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<"FR" | "AR">("FR");
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const stored = localStorage.getItem("lang") as "FR" | "AR";
+    if (stored) {
+      setLangState(stored);
+    }
+  }, []);
+
+  const setLang = (newLang: "FR" | "AR") => {
+    setLangState(newLang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lang", newLang);
+      // Update HTML dir attribute
+      const html = document.documentElement;
+      if (newLang === 'AR') {
+        html.setAttribute('dir', 'rtl');
+        html.classList.add('ar');
+      } else {
+        html.setAttribute('dir', 'ltr');
+        html.classList.remove('ar');
+      }
+    }
+  };
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, isClient }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+}
+
+// Global language state
+let currentLang: "FR" | "AR" = "FR";
+
 export function getLang(): "FR" | "AR" {
   if (typeof window !== "undefined") {
-    return (localStorage.getItem("lang") as "FR" | "AR") || "FR";
+    const stored = localStorage.getItem("lang") as "FR" | "AR";
+    if (stored) {
+      currentLang = stored;
+      return stored;
+    }
   }
-  return "FR";
+  return currentLang;
+}
+
+export function setLang(lang: "FR" | "AR") {
+  currentLang = lang;
+  if (typeof window !== "undefined") {
+    localStorage.setItem("lang", lang);
+    // Dispatch custom event to notify components
+    window.dispatchEvent(new CustomEvent("langchange", { detail: lang }));
+  }
 }
 
 export function t(key: string) {

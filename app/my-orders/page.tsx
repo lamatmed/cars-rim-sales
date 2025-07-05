@@ -4,16 +4,13 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n";
 
 export default function MyOrdersPage() {
-  // Tous les hooks sont toujours appelés
-  const [isClient, setIsClient] = useState(false);
+  const { lang, isClient } = useLanguage();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  useEffect(() => { setIsClient(true); }, []);
 
   useEffect(() => {
     if (!isClient) return;
@@ -26,22 +23,23 @@ export default function MyOrdersPage() {
         setLoading(false);
       })
       .catch(() => {
-        setError("Erreur lors du chargement");
+        setError(isClient ? (lang === 'AR' ? 'خطأ في التحميل' : 'Erreur lors du chargement') : '');
         setLoading(false);
       });
-  }, [isClient]);
+  }, [isClient, lang]);
 
-  // Rendu conditionnel : le JSX dynamique seulement si isClient
-  if (!isClient) return null;
-
-  if (loading) return <div>{t("loading") || "Chargement..."}</div>;
+  if (loading) return <div>{isClient ? (lang === 'AR' ? 'جاري التحميل...' : 'Chargement...') : ''}</div>;
   if (error) return <div className="text-red-500 text-center pt-24">{error}</div>;
-  if (orders.length === 0) return <div className="text-center text-gray-500 pt-24">{t("noOrders")}</div>;
+  if (orders.length === 0) return <div className="text-center text-gray-500 pt-24">
+    {isClient ? (lang === 'AR' ? 'لا توجد طلبات.' : 'Aucune commande trouvée.') : ''}
+  </div>;
 
   return (
     <main className="min-h-screen bg-gray-50">
       <section className="max-w-5xl mx-auto px-4 py-18">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">{t("myOrders")}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">
+          {isClient ? (lang === 'AR' ? 'طلباتي' : 'Mes commandes') : ''}
+        </h1>
         <div className="space-y-6">
           {orders.map((order: any) => (
             <div key={order._id} className="bg-white rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center gap-6">
@@ -49,14 +47,27 @@ export default function MyOrdersPage() {
               <div className="flex-1">
                 <h2 className="text-xl font-bold text-gray-900">{order.car.brand} {order.car.model}</h2>
                 <p className="text-gray-600">{order.car.year} • {order.car.category}</p>
-                <p className="text-gray-500 mt-1">Lieu : {order.car.location}</p>
-                <p className="text-gray-500 mt-1">Prix : MRU{order.price}</p>
-                <p className="text-gray-500 mt-1">Date : {new Date(order.createdAt).toLocaleDateString()}</p>
+                <p className="text-gray-500 mt-1">
+                  {isClient ? (lang === 'AR' ? 'المكان: ' : 'Lieu : ') : ''}{order.car.location}
+                </p>
+                <p className="text-gray-500 mt-1">
+                  {isClient ? (lang === 'AR' ? 'السعر: ' : 'Prix : ') : ''}MRU{order.price}
+                </p>
+                <p className="text-gray-500 mt-1">
+                  {isClient ? (lang === 'AR' ? 'التاريخ: ' : 'Date : ') : ''}{new Date(order.createdAt).toLocaleDateString()}
+                </p>
               </div>
               <div className="flex flex-col gap-2">
-                <Link href={`/my-orders/${order._id}`} className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg text-sm text-center">{t("view")}</Link>
+                <Link href={`/my-orders/${order._id}`} className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg text-sm text-center">
+                  {isClient ? (lang === 'AR' ? 'عرض' : 'Voir') : ''}
+                </Link>
               </div>
-              <span className={`px-4 py-2 rounded-lg font-semibold text-sm ${order.status === 'confirmée' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{order.status}</span>
+              <span className={`px-4 py-2 rounded-lg font-semibold text-sm ${order.status === 'confirmée' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                {isClient ? (lang === 'AR' ? 
+                  (order.status === 'confirmée' ? 'مؤكدة' : 
+                   order.status === 'en attente' ? 'في الانتظار' : order.status) : 
+                  order.status) : ''}
+              </span>
             </div>
           ))}
         </div>

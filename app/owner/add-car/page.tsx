@@ -6,7 +6,7 @@ import { assets, cityList } from "../../../public/assets/assets";
 import Image from "next/image";
 import Link from "next/link";
 import Uploader from "@/components/Uploader";
-import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n";
 
 export default function AddCarPage() {
   const [brand, setBrand] = useState("");
@@ -24,6 +24,7 @@ export default function AddCarPage() {
   const [description, setDescription] = useState("");
   const [isAvaliable, setIsAvaliable] = useState(true);
   const router = useRouter();
+  const { lang, isClient } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ export default function AddCarPage() {
     try {
       const user = JSON.parse(localStorage.getItem("user") || "null");
       if (!user) {
-        setError("Vous devez être connecté");
+        setError(isClient ? (lang === 'AR' ? 'يجب تسجيل الدخول' : 'Vous devez être connecté') : '');
         setLoading(false);
         return;
       }
@@ -57,12 +58,12 @@ export default function AddCarPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Erreur lors de l'ajout");
+        setError(data.error || (isClient ? (lang === 'AR' ? 'خطأ في الإضافة' : 'Erreur lors de l\'ajout') : ''));
       } else {
         router.push("/owner/manage-cars");
       }
     } catch (err) {
-      setError("Erreur serveur");
+      setError(isClient ? (lang === 'AR' ? 'خطأ في الخادم' : 'Erreur serveur') : '');
     } finally {
       setLoading(false);
     }
@@ -74,79 +75,182 @@ export default function AddCarPage() {
         <div className="w-full max-w-2xl mb-6">
           <Link href="/owner" className="inline-flex items-center text-indigo-600 hover:underline font-medium mb-4">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-2"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-             {t("return")}
+             {isClient ? (lang === 'AR' ? 'العودة' : 'Retour') : ''}
           </Link>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
           <div className="flex flex-col items-center mb-6">
             <Image src={assets.addIconColored} alt="Ajouter" width={48} height={48} className="mb-2" />
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">{t("addCar")}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">
+              {isClient ? (lang === 'AR' ? 'إضافة سيارة' : 'Ajouter une voiture') : ''}
+            </h1>
           </div>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">{t("brand")}</label>
-                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Marque" value={brand} onChange={e => setBrand(e.target.value)} required />
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'الماركة' : 'Marque') : ''}
+                </label>
+                <input 
+                  type="text" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'الماركة' : 'Marque') : ''} 
+                  value={brand} 
+                  onChange={e => setBrand(e.target.value)} 
+                  required 
+                />
               </div>
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">{t("model")}</label>
-                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Modèle" value={model} onChange={e => setModel(e.target.value)} required />
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">{t("year")}</label>
-                <input type="number" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Année" value={year} onChange={e => setYear(e.target.value)} required />
-              </div>
-              <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">{t("category")}</label>
-                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Catégorie" value={category} onChange={e => setCategory(e.target.value)} />
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Nombre de places</label>
-                <input type="number" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Places" value={seating_capacity} onChange={e => setSeatingCapacity(e.target.value)} />
-              </div>
-              <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Type de carburant</label>
-                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Carburant" value={fuel_type} onChange={e => setFuelType(e.target.value)} />
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'الموديل' : 'Modèle') : ''}
+                </label>
+                <input 
+                  type="text" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'الموديل' : 'Modèle') : ''} 
+                  value={model} 
+                  onChange={e => setModel(e.target.value)} 
+                  required 
+                />
               </div>
             </div>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">Transmission</label>
-                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Transmission" value={transmission} onChange={e => setTransmission(e.target.value)} />
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'السنة' : 'Année') : ''}
+                </label>
+                <input 
+                  type="number" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'السنة' : 'Année') : ''} 
+                  value={year} 
+                  onChange={e => setYear(e.target.value)} 
+                  required 
+                />
               </div>
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">{t("price")}</label>
-                <input type="number" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Prix" value={price} onChange={e => setPrice(e.target.value)} required />
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'الفئة' : 'Catégorie') : ''}
+                </label>
+                <input 
+                  type="text" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'الفئة' : 'Catégorie') : ''} 
+                  value={category} 
+                  onChange={e => setCategory(e.target.value)} 
+                />
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'عدد المقاعد' : 'Nombre de places') : ''}
+                </label>
+                <input 
+                  type="number" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'المقاعد' : 'Places') : ''} 
+                  value={seating_capacity} 
+                  onChange={e => setSeatingCapacity(e.target.value)} 
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'نوع الوقود' : 'Type de carburant') : ''}
+                </label>
+                <input 
+                  type="text" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'الوقود' : 'Carburant') : ''} 
+                  value={fuel_type} 
+                  onChange={e => setFuelType(e.target.value)} 
+                />
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'ناقل الحركة' : 'Transmission') : ''}
+                </label>
+                <input 
+                  type="text" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'ناقل الحركة' : 'Transmission') : ''} 
+                  value={transmission} 
+                  onChange={e => setTransmission(e.target.value)} 
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'السعر' : 'Prix') : ''}
+                </label>
+                <input 
+                  type="number" 
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  placeholder={isClient ? (lang === 'AR' ? 'السعر' : 'Prix') : ''} 
+                  value={price} 
+                  onChange={e => setPrice(e.target.value)} 
+                  required 
+                />
               </div>
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">{t("location")}</label>
-              <select className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" value={location} onChange={e => setLocation(e.target.value)} required>
-                <option value="">{t("selectCity")}</option>
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'الموقع' : 'Localisation') : ''}
+              </label>
+              <select 
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                value={location} 
+                onChange={e => setLocation(e.target.value)} 
+                required
+              >
+                <option value="">
+                  {isClient ? (lang === 'AR' ? 'اختر المدينة' : 'Sélectionner une ville') : ''}
+                </option>
                 {cityList.map(city => (
                   <option key={city} value={city}>{city}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Description</label>
-              <textarea className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Description" rows={3} value={description} onChange={e => setDescription(e.target.value)} />
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'الوصف' : 'Description') : ''}
+              </label>
+              <textarea 
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                placeholder={isClient ? (lang === 'AR' ? 'الوصف' : 'Description') : ''} 
+                rows={3} 
+                value={description} 
+                onChange={e => setDescription(e.target.value)} 
+              />
             </div>
             <div className="flex items-center gap-2">
-              <input type="checkbox" id="isAvaliable" checked={isAvaliable} onChange={e => setIsAvaliable(e.target.checked)} />
-              <label htmlFor="isAvaliable" className="text-gray-700">{t("available")}</label>
+              <input 
+                type="checkbox" 
+                id="isAvaliable" 
+                checked={isAvaliable} 
+                onChange={e => setIsAvaliable(e.target.checked)} 
+              />
+              <label htmlFor="isAvaliable" className="text-gray-700">
+                {isClient ? (lang === 'AR' ? 'متاح' : 'Disponible') : ''}
+              </label>
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">{t("image")}</label>
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'الصورة' : 'Image') : ''}
+              </label>
               <Uploader onUpload={setImage} />
             </div>
             {error && <div className="text-red-500 text-center">{error}</div>}
-            <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-md transition-all" disabled={loading}>
-              {loading ? t("loading") : t("add")}
+            <button 
+              type="submit" 
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-md transition-all" 
+              disabled={loading}
+            >
+              {loading ? 
+                (isClient ? (lang === 'AR' ? 'جاري التحميل...' : 'Chargement...') : '') : 
+                (isClient ? (lang === 'AR' ? 'إضافة' : 'Ajouter') : '')
+              }
             </button>
           </form>
         </div>

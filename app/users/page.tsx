@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState } from "react";
-
+import { useLanguage } from "@/lib/i18n";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -10,6 +10,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [me, setMe] = useState<any>(null);
+  const { lang, isClient } = useLanguage();
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -33,16 +34,26 @@ export default function UsersPage() {
       setOrders(Array.isArray(orders) ? orders : []);
       setLoading(false);
     }).catch(() => {
-      setError("Erreur lors du chargement");
+      setError(isClient ? (lang === 'AR' ? 'خطأ في التحميل' : 'Erreur lors du chargement') : '');
       setLoading(false);
     });
-  }, []);
+  }, [isClient, lang]);
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Supprimer cet utilisateur ?")) return;
+    const confirmMessage = isClient ? 
+      (lang === 'AR' ? 'هل تريد حذف هذا المستخدم؟' : 'Supprimer cet utilisateur ?') : 
+      'Supprimer cet utilisateur ?';
+    
+    if (!window.confirm(confirmMessage)) return;
+    
     const res = await fetch(`/api/users/${id}`, { method: "DELETE" });
     if (res.ok) setUsers(users.filter(u => u._id !== id));
-    else alert("Erreur lors de la suppression");
+    else {
+      const errorMessage = isClient ? 
+        (lang === 'AR' ? 'خطأ في الحذف' : 'Erreur lors de la suppression') : 
+        'Erreur lors de la suppression';
+      alert(errorMessage);
+    }
   };
 
   const handlePromote = async (id: string) => {
@@ -52,26 +63,47 @@ export default function UsersPage() {
       body: JSON.stringify({ role: "admin" })
     });
     if (res.ok) setUsers(users.map(u => u._id === id ? { ...u, role: "admin" } : u));
-    else alert("Erreur lors de la promotion");
+    else {
+      const errorMessage = isClient ? 
+        (lang === 'AR' ? 'خطأ في الترقية' : 'Erreur lors de la promotion') : 
+        'Erreur lors de la promotion';
+      alert(errorMessage);
+    }
   };
 
-  if (loading) return <div>Chargement...</div>;
+  if (loading) return <div className="text-center pt-24">
+    {isClient ? (lang === 'AR' ? 'جاري التحميل...' : 'Chargement...') : ''}
+  </div>;
   if (error) return <div className="text-red-500 text-center pt-24">{error}</div>;
 
   return (
     <main className="min-h-screen bg-gray-50">
       <section className="max-w-5xl mx-auto px-4 py-18">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">Gestion des utilisateurs</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">
+          {isClient ? (lang === 'AR' ? 'إدارة المستخدمين' : 'Gestion des utilisateurs') : ''}
+        </h1>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white rounded-xl shadow-md">
             <thead>
               <tr className="bg-gray-100">
-                <th className="py-3 px-4 text-left">Nom</th>
-                <th className="py-3 px-4 text-left">Téléphone</th>
-                <th className="py-3 px-4 text-left">Rôle</th>
-                <th className="py-3 px-4 text-center">Voitures</th>
-                <th className="py-3 px-4 text-center">Commandes</th>
-                <th className="py-3 px-4 text-center">Actions</th>
+                <th className="py-3 px-4 text-left">
+                  {isClient ? (lang === 'AR' ? 'الاسم' : 'Nom') : ''}
+                </th>
+                <th className="py-3 px-4 text-left">
+                  {isClient ? (lang === 'AR' ? 'الهاتف' : 'Téléphone') : ''}
+                </th>
+                <th className="py-3 px-4 text-left">
+                  {isClient ? (lang === 'AR' ? 'الدور' : 'Rôle') : ''}
+                </th>
+                <th className="py-3 px-4 text-center">
+                  {isClient ? (lang === 'AR' ? 'السيارات' : 'Voitures') : ''}
+                </th>
+                <th className="py-3 px-4 text-center">
+                  {isClient ? (lang === 'AR' ? 'الطلبات' : 'Commandes') : ''}
+                </th>
+                <th className="py-3 px-4 text-center">
+                  {isClient ? (lang === 'AR' ? 'الإجراءات' : 'Actions') : ''}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -79,15 +111,36 @@ export default function UsersPage() {
                 <tr key={user._id} className="border-b">
                   <td className="py-3 px-4">{user.firstName} {user.lastName}</td>
                   <td className="py-3 px-4">{user.phone}</td>
-                  <td className="py-3 px-4">{user.role === "admin" ? <span className="text-indigo-600 font-bold">Admin</span> : "User"}</td>
-                  <td className="py-3 px-4 text-center">{cars.filter(car => car.owner && (car.owner._id === user._id || car.owner === user._id)).length}</td>
-                  <td className="py-3 px-4 text-center">{orders.filter(order => order.user && (order.user._id === user._id || order.user === user._id)).length}</td>
+                  <td className="py-3 px-4">
+                    {user.role === "admin" ? 
+                      <span className="text-indigo-600 font-bold">
+                        {isClient ? (lang === 'AR' ? 'مدير' : 'Admin') : ''}
+                      </span> : 
+                      (isClient ? (lang === 'AR' ? 'مستخدم' : 'User') : '')
+                    }
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    {cars.filter(car => car.owner && (car.owner._id === user._id || car.owner === user._id)).length}
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    {orders.filter(order => order.user && (order.user._id === user._id || order.user === user._id)).length}
+                  </td>
                   <td className="py-3 px-4 text-center space-x-2">
                     {me && user._id !== me._id && (
                       <>
-                        <button onClick={() => handleDelete(user._id)} className="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded text-xs">Supprimer</button>
+                        <button 
+                          onClick={() => handleDelete(user._id)} 
+                          className="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded text-xs"
+                        >
+                          {isClient ? (lang === 'AR' ? 'حذف' : 'Supprimer') : ''}
+                        </button>
                         {user.role !== "admin" && (
-                          <button onClick={() => handlePromote(user._id)} className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold py-1 px-3 rounded text-xs">Rendre admin</button>
+                          <button 
+                            onClick={() => handlePromote(user._id)} 
+                            className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold py-1 px-3 rounded text-xs"
+                          >
+                            {isClient ? (lang === 'AR' ? 'ترقية إلى مدير' : 'Rendre admin') : ''}
+                          </button>
                         )}
                       </>
                     )}

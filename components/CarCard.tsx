@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n.tsx";
 import { FaWhatsapp } from 'react-icons/fa';
 // import { assets } from "../public/assets/assets"; // Supprimé
 
@@ -37,6 +37,7 @@ interface Car {
 
 export default function CarCard({ car }: { car: Car }) {
   const router = useRouter();
+  const { lang, isClient } = useLanguage();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showOrder, setShowOrder] = useState(false);
   const [startDate, setStartDate] = useState('');
@@ -66,11 +67,11 @@ export default function CarCard({ car }: { car: Car }) {
     setOrderSuccess('');
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     if (!user) {
-      setOrderError('Vous devez être connecté');
+      setOrderError(isClient ? (lang === 'AR' ? 'يجب أن تكون مسجلاً للدخول' : 'Vous devez être connecté') : '');
       return;
     }
     if (!startDate || !endDate) {
-      setOrderError('Veuillez choisir les dates');
+      setOrderError(isClient ? (lang === 'AR' ? 'يرجى اختيار التواريخ' : 'Veuillez choisir les dates') : '');
       return;
     }
     try {
@@ -86,15 +87,15 @@ export default function CarCard({ car }: { car: Car }) {
         })
       });
       const data = await res.json();
-      if (!res.ok) setOrderError(data.error || 'Erreur lors de la commande');
+      if (!res.ok) setOrderError(data.error || (isClient ? (lang === 'AR' ? 'خطأ في الطلب' : 'Erreur lors de la commande') : ''));
       else {
-        setOrderSuccess('Commande passée avec succès !');
+        setOrderSuccess(isClient ? (lang === 'AR' ? 'تم الطلب بنجاح!' : 'Commande passée avec succès !') : '');
         setShowOrder(false);
         setStartDate('');
         setEndDate('');
       }
     } catch (err) {
-      setOrderError('Erreur serveur');
+      setOrderError(isClient ? (lang === 'AR' ? 'خطأ في الخادم' : 'Erreur serveur') : '');
     }
   };
 
@@ -107,7 +108,7 @@ export default function CarCard({ car }: { car: Car }) {
             <p className="text-gray-500 mt-1">{car.year} • {car.category}</p>
           </div>
           <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
-            Prix : MRU{car.price}
+            {isClient ? (lang === 'AR' ? 'السعر: ' : 'Prix : ') : ''}MRU{car.price}
           </span>
         </div>
         <div className="mt-4 h-48 overflow-hidden rounded-lg">
@@ -122,7 +123,7 @@ export default function CarCard({ car }: { car: Car }) {
         <div className="grid grid-cols-2 gap-4 mt-5">
           <div className="flex items-center">
             <span className="mr-2">👥</span>
-            <span className="text-gray-600">{car.seating_capacity} places</span>
+            <span className="text-gray-600">{car.seating_capacity} {isClient ? (lang === 'AR' ? 'مقاعد' : 'places') : ''}</span>
           </div>
           <div className="flex items-center">
             <span className="mr-2">⛽</span>
@@ -144,7 +145,7 @@ export default function CarCard({ car }: { car: Car }) {
           <div className="flex items-center">
             <span className="mr-1">⭐</span>
             <span className="font-semibold">4.8</span>
-            <span className="text-gray-500 ml-1">(128 avis)</span>
+            <span className="text-gray-500 ml-1">(128 {isClient ? (lang === 'AR' ? 'تقييم' : 'avis') : ''})</span>
           </div>
           <div className="flex flex-col gap-2 items-end">
           <button 
@@ -152,22 +153,28 @@ export default function CarCard({ car }: { car: Car }) {
             disabled={!car.isAvaliable}
               onClick={handleBuy}
           >
-            {t("buy")}
+            {isClient ? (lang === 'AR' ? 'مهتم' : 'Intéressant') : ''}
           </button>
             {showOrder && (
               <form onSubmit={handleOrder} className="bg-white border rounded p-4 mt-2 flex flex-col gap-2 shadow-lg z-10">
-                <label className="text-sm font-medium">Début</label>
+                <label className="text-sm font-medium">{isClient ? (lang === 'AR' ? 'البداية' : 'Début') : ''}</label>
                 <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required className="border rounded p-2" />
-                <label className="text-sm font-medium">Fin</label>
+                <label className="text-sm font-medium">{isClient ? (lang === 'AR' ? 'النهاية' : 'Fin') : ''}</label>
                 <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required className="border rounded p-2" />
                 {orderError && <div className="text-red-500 text-xs">{orderError}</div>}
-                <button type="submit" className="bg-indigo-600 text-white rounded py-2 font-bold mt-2">Confirmer</button>
-                <button type="button" className="text-gray-500 text-xs mt-1 underline" onClick={() => setShowOrder(false)}>Annuler</button>
+                <button type="submit" className="bg-indigo-600 text-white rounded py-2 font-bold mt-2">
+                  {isClient ? (lang === 'AR' ? 'تأكيد' : 'Confirmer') : ''}
+                </button>
+                <button type="button" className="text-gray-500 text-xs mt-1 underline" onClick={() => setShowOrder(false)}>
+                  {isClient ? (lang === 'AR' ? 'إلغاء' : 'Annuler') : ''}
+                </button>
               </form>
             )}
             {orderSuccess && <div className="text-green-600 text-xs mt-2">{orderSuccess}</div>}
             <div className="flex gap-2 mt-4">
-              <Link href={`/cars/${car._id}`} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg text-sm text-center">{t("detail")}</Link>
+              <Link href={`/cars/${car._id}`} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg text-sm text-center">
+                {isClient ? (lang === 'AR' ? 'تفاصيل' : 'Détail') : ''}
+              </Link>
               {typeof car.owner === 'object' && car.owner && 'phone' in car.owner && car.owner.phone && (
                 <a
                   href={`https://wa.me/${car.owner.phone.replace(/[^\d]/g, "")}`}

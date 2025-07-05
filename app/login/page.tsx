@@ -6,7 +6,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiPhone, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { useState, useEffect } from "react";
-import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,9 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => { setIsClient(true); }, []);
+  const { lang, isClient } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +29,14 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Erreur lors de la connexion");
+        setError(data.error || (isClient ? (lang === 'AR' ? 'خطأ في تسجيل الدخول' : 'Erreur lors de la connexion') : ''));
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         window.location.href = "/";
       }
     } catch (err) {
-      setError("Erreur serveur");
+      setError(isClient ? (lang === 'AR' ? 'خطأ في الخادم' : 'Erreur serveur') : '');
     } finally {
       setLoading(false);
     }
@@ -74,20 +72,24 @@ export default function LoginPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full blur-md opacity-20 -z-10"></div>
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
-              {isClient ? t("login") : "Connexion"}
+              {isClient ? (lang === 'AR' ? 'تسجيل الدخول' : 'Connexion') : ''}
             </h1>
-            <p className="text-gray-500 mt-2">{isClient ? t("loginSubtitle") : "Accédez à votre espace personnel"}</p>
+            <p className="text-gray-500 mt-2">
+              {isClient ? (lang === 'AR' ? 'ادخل إلى حسابك الشخصي' : 'Accédez à votre espace personnel') : ''}
+            </p>
           </motion.div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("phone") : "Téléphone"}</label>
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'الهاتف' : 'Téléphone') : ''}
+              </label>
               <div className="relative">
                 <FiPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input
                   type="tel"
                   className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300 transition-all"
-                  placeholder={isClient ? t("phonePlaceholder") : "+222 22 22 22 22"}
+                  placeholder={isClient ? (lang === 'AR' ? '+222 22 22 22 22' : '+222 22 22 22 22') : ''}
                   required
                   pattern="[+]{1}[0-9]{1,3}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}"
                   value={phone}
@@ -96,13 +98,15 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("password") : "Mot de passe"}</label>
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'كلمة المرور' : 'Mot de passe') : ''}
+              </label>
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300 transition-all"
-                  placeholder={isClient ? t("passwordPlaceholder") : "••••••••"}
+                  placeholder={isClient ? (lang === 'AR' ? '••••••••' : '••••••••') : ''}
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -116,7 +120,7 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            {error && <div className="text-red-500 text-sm text-center">{isClient ? t(error) : error}</div>}
+            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <input 
@@ -127,11 +131,11 @@ export default function LoginPage() {
                   className="h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300"
                 />
                 <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                  {isClient ? t("rememberMe") : "Se souvenir de moi"}
+                  {isClient ? (lang === 'AR' ? 'تذكرني' : 'Se souvenir de moi') : ''}
                 </label>
               </div>
               <Link href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
-                {isClient ? t("forgotPassword") : "Mot de passe oublié?"}
+                {isClient ? (lang === 'AR' ? 'نسيت كلمة المرور؟' : 'Mot de passe oublié?') : ''}
               </Link>
             </div>
             <motion.button
@@ -141,14 +145,17 @@ export default function LoginPage() {
               className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg"
               disabled={loading}
             >
-              {loading ? (isClient ? t("loggingIn") : "Connexion...") : (isClient ? t("loginBtn") : "Se connecter")}
+              {loading ? 
+                (isClient ? (lang === 'AR' ? '...جاري تسجيل الدخول' : 'Connexion...') : '') : 
+                (isClient ? (lang === 'AR' ? 'تسجيل الدخول' : 'Se connecter') : '')
+              }
             </motion.button>
           </form>
 
           <p className="text-center text-gray-600 text-sm mt-6">
-            {isClient ? t("noAccount") : "Pas encore de compte?"} {" "}
+            {isClient ? (lang === 'AR' ? 'ليس لديك حساب؟' : 'Pas encore de compte?') : ''} {" "}
             <Link href="/register" className="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">
-              {isClient ? t("createAccount") : "Créer un compte"}
+              {isClient ? (lang === 'AR' ? 'إنشاء حساب' : 'Créer un compte') : ''}
             </Link>
           </p>
         </motion.div>

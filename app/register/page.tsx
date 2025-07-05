@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiUser, FiPhone, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n";
 import { useState, useEffect } from "react";
 import Uploader from "@/components/Uploader";
 
@@ -21,9 +21,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => { setIsClient(true); }, []);
+  const { lang, isClient } = useLanguage();
 
   const handleImageUpload = (url: string) => {
     setImageUrl(url);
@@ -33,7 +31,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
-      setError(t("passwordMismatch"));
+      setError(isClient ? (lang === 'AR' ? 'كلمات المرور غير متطابقة' : 'Les mots de passe ne correspondent pas') : '');
       return;
     }
     setLoading(true);
@@ -45,7 +43,7 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || t("registerError"));
+        setError(data.error || (isClient ? (lang === 'AR' ? 'خطأ في التسجيل' : 'Erreur lors de l\'inscription') : ''));
       } else {
         if (data.token && data.user) {
           localStorage.setItem("token", data.token);
@@ -54,7 +52,7 @@ export default function RegisterPage() {
         window.location.href = "/login";
       }
     } catch (err) {
-      setError(t("serverError"));
+      setError(isClient ? (lang === 'AR' ? 'خطأ في الخادم' : 'Erreur serveur') : '');
     } finally {
       setLoading(false);
     }
@@ -90,9 +88,11 @@ export default function RegisterPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full blur-md opacity-20 -z-10"></div>
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
-              {isClient ? t("register") : "Créer un compte"}
+              {isClient ? (lang === 'AR' ? 'إنشاء حساب' : 'Créer un compte') : ''}
             </h1>
-            <p className="text-gray-500 mt-2">{isClient ? t("registerSubtitle") : "Rejoignez notre communauté"}</p>
+            <p className="text-gray-500 mt-2">
+              {isClient ? (lang === 'AR' ? 'انضم إلى مجتمعنا' : 'Rejoignez notre communauté') : ''}
+            </p>
           </motion.div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
@@ -103,13 +103,15 @@ export default function RegisterPage() {
 
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">{isClient ? t("firstName") : "Prénom"}</label>
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'الاسم الأول' : 'Prénom') : ''}
+                </label>
                 <div className="relative">
                   <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                   <input 
                     type="text" 
                     className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                    placeholder={isClient ? t("firstNamePlaceholder") : "Votre prénom"}
+                    placeholder={isClient ? (lang === 'AR' ? 'الاسم الأول' : 'Votre prénom') : ''}
                     required 
                     value={firstName}
                     onChange={e => setFirstName(e.target.value)}
@@ -117,13 +119,15 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div className="flex-1">
-                <label className="block text-gray-700 font-medium mb-2">{isClient ? t("lastName") : "Nom"}</label>
+                <label className="block text-gray-700 font-medium mb-2">
+                  {isClient ? (lang === 'AR' ? 'اسم العائلة' : 'Nom') : ''}
+                </label>
                 <div className="relative">
                   <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                   <input 
                     type="text" 
                     className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                    placeholder={isClient ? t("lastNamePlaceholder") : "Votre nom"}
+                    placeholder={isClient ? (lang === 'AR' ? 'اسم العائلة' : 'Votre nom') : ''}
                     required 
                     value={lastName}
                     onChange={e => setLastName(e.target.value)}
@@ -133,13 +137,15 @@ export default function RegisterPage() {
             </div>
 
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("phone") : "Téléphone"}</label>
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'الهاتف' : 'Téléphone') : ''}
+              </label>
               <div className="relative">
                 <FiPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input
                   type="tel"
                   className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300"
-                  placeholder={isClient ? t("phonePlaceholder") : "+222 22 22 22 22"}
+                  placeholder={isClient ? (lang === 'AR' ? '+222 22 22 22 22' : '+222 22 22 22 22') : ''}
                   required
                   pattern="[+]{1}[0-9]{1,3}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}[ ]{0,1}[0-9]{1,4}"
                   value={phone}
@@ -149,13 +155,15 @@ export default function RegisterPage() {
             </div>
 
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("password") : "Mot de passe"}</label>
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'كلمة المرور' : 'Mot de passe') : ''}
+              </label>
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input 
                   type={showPassword ? "text" : "password"} 
                   className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                  placeholder={isClient ? t("passwordPlaceholder") : "••••••••"} 
+                  placeholder={isClient ? (lang === 'AR' ? '••••••••' : '••••••••') : ''} 
                   required 
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -171,13 +179,15 @@ export default function RegisterPage() {
             </div>
 
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-2">{isClient ? t("confirmPassword") : "Confirmer le mot de passe"}</label>
+              <label className="block text-gray-700 font-medium mb-2">
+                {isClient ? (lang === 'AR' ? 'تأكيد كلمة المرور' : 'Confirmer le mot de passe') : ''}
+              </label>
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-400" />
                 <input 
                   type={showConfirmPassword ? "text" : "password"} 
                   className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent bg-white text-gray-800 placeholder-indigo-300" 
-                  placeholder={isClient ? t("confirmPasswordPlaceholder") : "••••••••"} 
+                  placeholder={isClient ? (lang === 'AR' ? '••••••••' : '••••••••') : ''} 
                   required 
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
@@ -192,7 +202,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {error && <div className="text-red-500 text-sm text-center">{isClient ? t(error) : error}</div>}
+            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
 
             <div className="flex items-center">
               <input 
@@ -201,8 +211,10 @@ export default function RegisterPage() {
                 className="h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300"
               />
               <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                {isClient ? t("terms") : "J'accepte les "}
-                <Link href="/terms" className="text-indigo-600 hover:underline font-medium">{isClient ? t("termsLink") : "termes et conditions"}</Link>
+                {isClient ? (lang === 'AR' ? 'أوافق على ' : 'J\'accepte les ') : ''}
+                <Link href="/terms" className="text-indigo-600 hover:underline font-medium">
+                  {isClient ? (lang === 'AR' ? 'الشروط والأحكام' : 'termes et conditions') : ''}
+                </Link>
               </label>
             </div>
 
@@ -216,14 +228,17 @@ export default function RegisterPage() {
               className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg mt-2"
               disabled={loading}
             >
-              {loading ? (isClient ? t("registering") : "Inscription...") : (isClient ? t("registerBtn") : "S'inscrire")}
+              {loading ? 
+                (isClient ? (lang === 'AR' ? '...جاري التسجيل' : 'Inscription...') : '') : 
+                (isClient ? (lang === 'AR' ? 'إنشاء حساب' : 'S\'inscrire') : '')
+              }
             </motion.button>
           </form>
 
           <p className="text-center text-gray-600 text-sm mt-6">
-            {isClient ? t("alreadyAccount") : "Déjà un compte ?"} {" "}
+            {isClient ? (lang === 'AR' ? 'لديك حساب بالفعل؟' : 'Déjà un compte ?') : ''} {" "}
             <Link href="/login" className="text-indigo-600 hover:text-indigo-800 font-semibold">
-              {isClient ? t("login") : "Se connecter"}
+              {isClient ? (lang === 'AR' ? 'تسجيل الدخول' : 'Se connecter') : ''}
             </Link>
           </p>
         </motion.div>

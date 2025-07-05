@@ -3,9 +3,11 @@
 import Image from "next/image";
 import { assets, menuLinks, cityList } from "../public/assets/assets";
 import Link from "next/link";
-import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n.tsx";
 
 export default function Footer() {
+  const { lang, isClient } = useLanguage();
+
   return (
     <footer className="bg-white border-t border-gray-200 pt-16 pb-8 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,7 +19,11 @@ export default function Footer() {
               <Image src={assets.logo} alt="Cars-Rim Logo" width={40} height={40} className="h-10 w-auto mr-3" />
               <span className="text-2xl font-bold text-gray-900">Cars-Rim</span>
             </div>
-            <p className="text-gray-600 max-w-md mb-8">{t("footerDescription")}</p>
+            <p className="text-gray-600 max-w-md mb-8">
+              {isClient ? (lang === 'AR' ? 
+                'بيع سيارات فاخرة في موريتانيا. اكتشف مجموعتنا الحصرية وابحث عن السيارة المثالية لك.' : 
+                'Vente de voitures premium en Mauritanie. Découvrez notre collection exclusive et trouvez la voiture idéale pour vous.') : ''}
+            </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors">
                 <Image src={assets.facebook_logo} alt="Facebook" width={24} height={24} />
@@ -35,13 +41,23 @@ export default function Footer() {
           </div>
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">{t("quickLinks") || "Liens Rapides"}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+              {isClient ? (lang === 'AR' ? 'روابط سريعة' : 'Liens Rapides') : ''}
+            </h3>
             <ul className="space-y-4">
               {menuLinks.map((link, index) => (
                 <li key={index}>
                   <Link href={link.path} className="text-gray-600 hover:text-indigo-600 transition-colors flex items-center group">
                     <Image src={assets.arrow_icon} alt="Arrow" width={12} height={12} className="mr-2 transform group-hover:translate-x-1 transition-transform" />
-                    {t(link.name)}
+                    {isClient ? (lang === 'AR' ? 
+                      (link.name === 'home' ? 'الرئيسية' : 
+                       link.name === 'cars' ? 'السيارات' : 
+                       link.name === 'myOrders' ? 'اتصل بنا' :
+                       link.name === 'search' ? 'ابحث' : link.name) : 
+                      (link.name === 'home' ? 'Accueil' : 
+                       link.name === 'cars' ? 'Voitures' : 
+                       link.name === 'myOrders' ? 'Contacter' :
+                       link.name === 'search' ? 'Rechercher' : link.name)) : ''}
                   </Link>
                 </li>
               ))}
@@ -49,7 +65,9 @@ export default function Footer() {
           </div>
           {/* Locations */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">{t("ourCities") || "Nos Villes"}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+              {isClient ? (lang === 'AR' ? 'مدننا' : 'Nos Villes') : ''}
+            </h3>
             <ul className="space-y-3">
               {cityList.map((city, index) => (
                 <li key={index} className="flex items-center">
@@ -62,18 +80,22 @@ export default function Footer() {
           {/* Newsletter */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">Newsletter</h3>
-            <p className="text-gray-600 mb-4">Abonnez-vous pour recevoir nos offres exclusives et actualités</p>
+            <p className="text-gray-600 mb-4">
+              {isClient ? (lang === 'AR' ? 
+                'اشترك للحصول على عروضنا الحصرية والأخبار' : 
+                'Abonnez-vous pour recevoir nos offres exclusives et actualités') : ''}
+            </p>
             <form className="flex flex-col space-y-3">
               <input
                 type="email"
-                placeholder="Votre email"
+                placeholder={isClient ? (lang === 'AR' ? 'بريدك الإلكتروني' : 'Votre email') : ''}
                 className="px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-700"
               />
               <button
                 type="submit"
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
               >
-                S'abonner
+                {isClient ? (lang === 'AR' ? 'اشتراك' : 'S\'abonner') : ''}
                 <Image src={assets.arrow_icon} alt="Arrow" width={16} height={16} className="ml-2 rotate-90 filter invert" />
               </button>
             </form>
@@ -86,7 +108,9 @@ export default function Footer() {
               <Image src={assets.location_icon_colored} alt="Location" width={24} height={24} />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">Nous trouver</h4>
+              <h4 className="font-medium text-gray-900">
+                {isClient ? (lang === 'AR' ? 'اعثر علينا' : 'Nous trouver') : ''}
+              </h4>
               <p className="text-gray-600">Avenue Gamal Abdel Nasser, Nouakchott</p>
             </div>
           </div>
@@ -97,7 +121,9 @@ export default function Footer() {
               </svg>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">Appelez-nous</h4>
+              <h4 className="font-medium text-gray-900">
+                {isClient ? (lang === 'AR' ? 'اتصل بنا' : 'Appelez-nous') : ''}
+              </h4>
               <p className="text-gray-600">+222 30 57 28 16</p>
             </div>
           </div>
@@ -106,18 +132,28 @@ export default function Footer() {
               <Image src={assets.gmail_logo} alt="Email" width={24} height={24} />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">Écrivez-nous</h4>
+              <h4 className="font-medium text-gray-900">
+                {isClient ? (lang === 'AR' ? 'اكتب لنا' : 'Écrivez-nous') : ''}
+              </h4>
               <p className="text-gray-600">contact@cars-rim.mr</p>
             </div>
           </div>
         </div>
         {/* Bottom Section */}
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Cars-Rim. {t("allRightsReserved") || "Tous droits réservés."}</p>
+          <p className="text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} Cars-Rim. {isClient ? (lang === 'AR' ? 'جميع الحقوق محفوظة.' : 'Tous droits réservés.') : ''}
+          </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">{t("terms")}</a>
-            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">{t("privacy")}</a>
-            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">{t("cookies")}</a>
+            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">
+              {isClient ? (lang === 'AR' ? 'الشروط والأحكام' : 'Termes et conditions') : ''}
+            </a>
+            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">
+              {isClient ? (lang === 'AR' ? 'سياسة الخصوصية' : 'Politique de confidentialité') : ''}
+            </a>
+            <a href="#" className="text-gray-500 hover:text-indigo-600 text-sm transition-colors">
+              {isClient ? (lang === 'AR' ? 'الكوكيز' : 'Cookies') : ''}
+            </a>
           </div>
         </div>
       </div>
