@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from 'next/server';
 import { getCarByIdAction, updateCarAction, deleteCarAction } from '@/lib/actions';
 import connectDB from '@/lib/config/db';
 
-export async function GET(request: Request, { params } : any) {
+export async function GET(request: Request, { params }: any) {
   await connectDB();
   const result = await getCarByIdAction(params.id);
   if (result.error) return NextResponse.json({ error: result.error }, { status: 404 });

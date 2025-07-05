@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from 'next/server';
 import { getCarByIdAction, updateCarAction, deleteCarAction } from '@/lib/actions';
 import connectDB from '@/lib/config/db';

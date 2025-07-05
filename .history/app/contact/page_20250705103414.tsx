@@ -1,7 +1,8 @@
 'use client';
 import { useState } from "react";
 import { useLanguage } from "@/lib/i18n";
-
+import { assets } from "../../public/assets/assets";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiMail, FiPhone, FiMapPin, FiSend } from "react-icons/fi";
 
