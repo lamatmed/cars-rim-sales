@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "@/lib/i18n";
 
 export default function SearchResults() {
   const searchParams = useSearchParams();
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { lang, isClient } = useLanguage();
 
   useEffect(() => {
     fetch("/api/cars")
@@ -41,9 +43,23 @@ export default function SearchResults() {
     );
   }
 
-  if (loading) return <div>Chargement...</div>;
-  if (error) return <div className="text-red-500 text-center pt-24">{error}</div>;
-  if (filtered.length === 0) return <div className="text-center text-gray-500 pt-24">Aucune voiture trouvée pour ces critères.</div>;
+  if (loading) return (
+    <div className="text-center">
+      {isClient ? (lang === 'AR' ? 'جاري التحميل...' : 'Chargement...') : ''}
+    </div>
+  );
+  
+  if (error) return (
+    <div className="text-red-500 text-center pt-24">
+      {isClient ? (lang === 'AR' ? 'خطأ في التحميل' : 'Erreur lors du chargement') : ''}
+    </div>
+  );
+  
+  if (filtered.length === 0) return (
+    <div className="text-center text-gray-500 pt-24">
+      {isClient ? (lang === 'AR' ? 'لم يتم العثور على سيارات لهذه المعايير.' : 'Aucune voiture trouvée pour ces critères.') : ''}
+    </div>
+  );
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -54,7 +70,9 @@ export default function SearchResults() {
           <div className="text-gray-500 text-sm">{car.year} • {car.category}</div>
           <div className="text-gray-500 text-sm">{car.location}</div>
           <div className="text-indigo-600 font-bold mt-2">MRU{car.price}</div>
-          <Link href={`/cars/${car._id}`} className="mt-2 text-blue-600 hover:underline text-sm font-medium">Détail</Link>
+          <Link href={`/cars/${car._id}`} className="mt-2 text-blue-600 hover:underline text-sm font-medium">
+            {isClient ? (lang === 'AR' ? 'التفاصيل' : 'Détail') : ''}
+          </Link>
         </div>
       ))}
     </div>
